@@ -2,7 +2,6 @@ package ru.cherry.springhomework.controller;
 
 
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.cherry.springhomework.domain.Book;
@@ -12,7 +11,6 @@ import ru.cherry.springhomework.service.BookService;
 import ru.cherry.springhomework.service.CommentService;
 import ru.cherry.springhomework.service.GenreService;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -49,44 +47,25 @@ public class BookRestController {
 
     @GetMapping("/api/books/delete/{id}")
     public ResponseEntity<String> deleteBook(@PathVariable Long id) {
-        try {
-            Book book = bookService.getById(id);
-            if (null != book) {
-                bookService.deleteBook(id);
-            }
-            return new ResponseEntity<>(HttpStatus.OK);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .contentType(MediaType.TEXT_HTML)
-                    .body(e.getMessage());
+        Book book = bookService.getById(id);
+        if (null != book) {
+            bookService.deleteBook(id);
         }
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PostMapping("/api/books/save")
     public ResponseEntity<String> saveBook(@RequestBody BookDto bookDto) {
-        try {
-            Book book = bookService.getById(bookDto.getId());
-            book.setTitle(bookDto.getTitle());
-            bookService.save(book);
-            return new ResponseEntity<>(HttpStatus.ACCEPTED);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .contentType(MediaType.TEXT_HTML)
-                    .body(e.getMessage());
-        }
+        Book book = bookService.getById(bookDto.getId());
+        book.setTitle(bookDto.getTitle());
+        bookService.save(book);
+        return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }
 
     @PostMapping("/api/books/add")
     public ResponseEntity<String> addBook(@RequestBody BookDto bookDto) {
-        System.out.println("Add " + bookDto);
-        try {
-            bookService.addBook(bookDto.getTitle(), bookDto.getAuthorName(), bookDto.getGenreName());
-            return new ResponseEntity<>(HttpStatus.CREATED);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .contentType(MediaType.TEXT_HTML)
-                    .body(e.getMessage());
-        }
+        bookService.addBook(bookDto.getTitle(), bookDto.getAuthorName(), bookDto.getGenreName());
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
 }
