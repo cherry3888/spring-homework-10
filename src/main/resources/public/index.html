@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <title>List of all books</title>
+    <style type="text/css">
+        body {
+            padding: 50px;
+        }
+
+        .books, .books td {
+            border: 1px solid lightgray;
+            padding: 5px;
+        }
+    </style>
+    <script src="/webjars/jquery/3.3.1/jquery.min.js"></script>
+</head>
+<body>
+<h1>Books:</h1>
+
+<a href="add_book.html">Add New Book</a>
+<br>
+<table class="books">
+    <thead>
+    <tr>
+        <th>Id</th>
+        <th>Title</th>
+        <th>Author</th>
+        <th>Genre</th>
+        <th>Actions</th>
+        <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    </tbody>
+</table>
+
+<script>
+    $(function () {
+        $.get('/api/books').done(function (books) {
+            books.forEach(function (book) {
+                $('tbody').append(`
+                    <tr>
+                        <td>${book.id}</td>
+                        <td>${book.title}</td>
+                        <td>${book.authorName}</td>
+                        <td>${book.genreName}</td>
+                        <td><a href="view_book.html?id=${book.id}">View</a><td>
+                        <td><a href="edit_book.html?id=${book.id}">Edit</a><td>
+                        <td><a href="" onclick='deleteBook(${book.id})'>Delete</a><td>
+                    </tr>
+                `)
+            });
+        })
+    });
+
+    function deleteBook(id) {
+        console.log("deleteBook=" + id);
+        $.get('/api/books/delete/' + id)
+            .success(function() {window.location.href = "/";})
+    }
+
+</script>
+
+</body>
+</html>

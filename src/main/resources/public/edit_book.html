@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <title>View book</title>
+    <style type="text/css">
+        body {
+            padding: 50px;
+        }
+
+        .book, .book td {
+            border: 1px solid lightgray;
+            padding: 5px;
+        }
+    </style>
+    <script src="/webjars/jquery/3.3.1/jquery.min.js"></script>
+</head>
+<body>
+<form id="bookForm" onsubmit="saveBook(this); return false;" action="#" autocomplete="off">
+    <table class="book">
+        <thead>
+        <tr>
+            <th>Id</th>
+            <th>Title</th>
+            <th>Author</th>
+            <th>Genre</th>
+        </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+
+    <script>
+        $(function () {
+            const id = (new URLSearchParams(window.location.search)).get('id');
+            $.get('/api/books/view/' + id).done(function (book) {
+                $('tbody').append(`
+                    <tr>
+                        <td><input id="id" value="${book.id}" name="id" type="text" readonly/></td>
+                        <td><input id="title" value="${book.title}" name="title" type="text"/></td>
+                        <td>${book.authorName}</td>
+                        <td>${book.genreName}</td>
+                    </tr>
+                `)
+            })
+        });
+
+        function saveBook(form) {
+            let formData = new FormData(form);
+            $.ajax('/api/books/save', {
+                data: '{"id": "' + formData.get("id") + '", "title" : "' + formData.get("title") + '"}',
+                contentType: 'application/json',
+                type: 'POST',
+                success: function (response) {
+                    window.location.href = "/";
+                }
+            })
+        }
+    </script>
+
+    <div class="row">
+        <button type="submit">Save & Close</button>
+    </div>
+</form>
+
+</body>
+</html>

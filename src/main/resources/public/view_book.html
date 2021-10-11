@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <title>View book</title>
+    <style type="text/css">
+        body {
+            padding: 50px;
+        }
+
+        .book, .book td {
+            border: 1px solid lightgray;
+            padding: 5px;
+        }
+    </style>
+    <script src="/webjars/jquery/3.3.1/jquery.min.js"></script>
+</head>
+<body>
+
+
+<table class="book">
+    <thead>
+    <tr>
+        <th>Id</th>
+        <th>Title</th>
+        <th>Author</th>
+        <th>Genre</th>
+    </tr>
+    </thead>
+    <tbody>
+    </tbody>
+</table>
+
+<script>
+    $(function () {
+        const id = (new URLSearchParams(window.location.search)).get('id');
+        $.get('/api/books/view/' + id).done(function (book) {
+            $('tbody').append(`
+                    <tr>
+                        <td>${book.id}</td>
+                        <td>${book.title}</td>
+                        <td>${book.authorName}</td>
+                        <td>${book.genreName}</td>
+                    </tr>
+                `)
+            $('tbody').append(`COMMENTS:`)
+            book.comments.forEach(function (comment) {
+                $('tbody').append(`
+                        <br>
+                        ${comment}
+                    `)
+            })
+        })
+    });
+</script>
+
+</body>
+</html>
